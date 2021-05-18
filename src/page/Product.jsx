@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import {Card, Form, Button, Container, Row, Col} from 'react-bootstrap';
+import {Card, Form, Button, Container, Col} from 'react-bootstrap';
 import firebase from '../firebaseConnection';
-import { toast } from 'react-toastify';
+import sweetalert from 'sweetalert';
 
 export default function Product(){
 
@@ -14,6 +14,10 @@ export default function Product(){
     const [data, setData] = useState('')
 
     async function handleAdd(){
+        if(nome === '' && lote === '' && usuario === '' && setor === ''){
+            sweetalert({title:'Preencha os campos!', text: 'Você tem que preencher os campos', icon:'warning', button:'Voltar'})
+            return;
+        }else{
         await firebase.firestore().collection('produto')
         .add({
             nome: nome,
@@ -24,8 +28,8 @@ export default function Product(){
             usuario: usuario,
             entrada: data,
         })
+        sweetalert({title:'Sucesso!', text:'Cadastro feito com sucesso!', icon:'success', button:'OK'})
         .then(() => {
-            toast.success('Dados cadastrado com sucesso!')
             setNome('')
             setModelo('')
             setFabricante('')
@@ -35,9 +39,9 @@ export default function Product(){
             setData('')
         })
         .catch((error) => {
-            toast.warning('Algo deu errado!' + error)
+            sweetalert.warning('Algo deu errado!' + error)
         })
-
+    }
 
     }
 
